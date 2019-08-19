@@ -1,9 +1,13 @@
 import './styles/App.css';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
+const socket = io('http://localhost:8080');
 
 function App() {
-  const { current: socket } = useRef(io('http://localhost:8080'));
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState(['message one', 'message two']);
+
+  const messageList = messages.map((msg, i) => <li key={i}>{msg}</li>);
 
   useEffect(() => {
     try {
@@ -11,19 +15,35 @@ function App() {
         console.log('connected');
       });
 
-      socket.on('testConnection', str => console.log(str));
+      socket.on('messageReceived', msg => {
+        setMessages([...messages, msg]);
+      });
     } catch (e) {
       console.log(e);
     }
+  }, []);
 
-    return () => {
-      socket.close();
-    };
-  }, [socket]);
+  function handleMessageSend() {
+    socket.emit('clientMessage', message);
+  }
+
+  function handleMessageChange(e) {
+    setMessage(e.target.value);
+  }
 
   return (
     <div className="App">
-      My App
+      <textarea onChange={handleMessageChange} name="txtArea" id="txtArea" cols="30" rows="10"></textarea>
+      <br/>
+      <button onClick={handleMessageSend}>Send</button>
+      <br/>
+      <div className="messages">
+        <ul>
+          {
+            messageList
+          }
+        </ul>
+      </div>
     </div>
   );
 }

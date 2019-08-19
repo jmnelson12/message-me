@@ -27,7 +27,9 @@ io.on("connection", socket => {
     console.log(" %s sockets connected", io.engine.clientsCount);
     socketLib.load_common_events(socket);
 
-    io.emit("testConnection", "someone connected");
+    socket.on("clientMessage", msg => {
+        io.emit("messageReceived", msg);
+    });
 });
 
 server.listen(port, () => console.log(`Server running on port: ${port}`));
