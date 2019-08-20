@@ -1,0 +1,33 @@
+.messageBoard {
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.messageList {
+    height: calc(100% - 45px);
+    color: var(--text-color-second)
+}
+
+.messageInput {
+    height: 45px;
+    widows: 100%;
+    background-color: var(--blue);
+    display: flex;
+    justify-content: center;
+    padding: 5px 10px;
+}
+
+.messageInput input {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .05);
+    border: none;
+    border-radius: 50px;
+    padding: 0px 15px;
+    color: var(--text-color-first);
+}
+
+.messageInput input:focus {
+    outline: none;
+}

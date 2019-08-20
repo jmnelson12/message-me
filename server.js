@@ -25,11 +25,20 @@ app.disable("x-powered-by");
 
 io.on("connection", socket => {
     console.log(" %s sockets connected", io.engine.clientsCount);
-    socketLib.load_common_events(socket);
 
-    socket.on("clientMessage", msg => {
-        io.emit("messageReceived", msg);
-    });
+    socketLib.load_common_events(socket);
+    socketLib.load_message_events(socket);
 });
+
+// production
+if (!isDev) {
+    // app.use(sslRedirect());
+    app.use(express.static(__dirname));
+    app.use(express.static(path.join(__dirname, "frontend", "build")));
+
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
+    });
+}
 
 server.listen(port, () => console.log(`Server running on port: ${port}`));
