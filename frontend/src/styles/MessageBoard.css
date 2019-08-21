@@ -1,12 +1,17 @@
 .messageBoard {
-    height: 100%;
+    height: calc(100% - 45px);
     display: flex;
     flex-flow: column nowrap;
 }
 
 .messageList {
     height: calc(100% - 45px);
-    color: var(--text-color-second)
+    color: var(--text-color-second);
+    padding: 15px 0 5px 15px;
+}
+
+.messageList ul {
+    list-style: none;
 }
 
 .messageInput {

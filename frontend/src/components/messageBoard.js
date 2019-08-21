@@ -8,13 +8,18 @@ function MessageBoard() {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState(['message one', 'message two']);
 
-    function handleMessageSend() {
-        sendMessage(message);
+    function handleMessageSend(e) {
+        if (e.keyCode === 13) {
+            sendMessage(message);
+            setMessage('');
+        }
     }
 
     function handleMessageChange(e) {
         setMessage(e.target.value);
     }
+
+
 
     return (
         <div className="messageBoard">
@@ -24,7 +29,15 @@ function MessageBoard() {
                 </Suspense>
             </div>
             <div className="messageInput">
-                <input type="text" name="txtMessage" id="txtMessage" placeholder={"Type a message..."} />
+                <input
+                    type="text"
+                    name="txtMessage"
+                    id="txtMessage"
+                    value={message}
+                    placeholder={"Type a message..."}
+                    onChange={handleMessageChange}
+                    onKeyDown={handleMessageSend}
+                />
             </div>
         </div>
     )
