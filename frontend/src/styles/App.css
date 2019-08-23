@@ -1,3 +1,5 @@
+@import url(https://fonts.googleapis.com/css?family=Heebo);
+
 :root {
     --dark-blue: #26262f;
     --medium-blue: #2C2C36;
@@ -5,6 +7,7 @@
     --white: rgba(223, 223, 223);
     --text-color-first: #dfdfdf;
     --text-color-second: #979797;
+    --height45: calc(100% - 45px);
 }
 
 *,
@@ -38,6 +41,10 @@ html {
 
 .App>div {
     border: 1px solid var(--dark-blue);
+}
+
+.txt-red {
+    color: salmon;
 }
 
 .col-1 {
@@ -122,4 +129,45 @@ html {
     -ms-flex: 0 0 100%;
     flex: 0 0 100%;
     max-width: 100%;
+}
+
+.sidebar {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100%;
+}
+
+.aboutMe {
+    height: var(--height45);
+    padding: 20px;
+    text-align: center;
+    overflow-y: auto;
+    font-family: Heebo, sans-serif;
+}
+
+.aboutMe .info {
+    text-align: left;
+}
+
+.profileImage img {
+    width: 150px;
+    height: 150px;
+    border-radius: 45%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    margin: 20px auto;
+    -webkit-transition: width 1s ease, height 1s ease;
+    transition: width 1s ease, height 1s ease;
+}
+
+.messageStatus {
+    display: flex;
+    justify-content: center;
+    height: 45px;
+    background-color: var(--dark-blue);
+}
+
+.messageStatus .status {
+    margin-top: 16px;
+    color: var(--text-color-second);
 }

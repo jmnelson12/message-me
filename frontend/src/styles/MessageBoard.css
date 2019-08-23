@@ -1,13 +1,14 @@
 .messageBoard {
-    height: calc(100% - 45px);
+    height: var(--height45);
     display: flex;
     flex-flow: column nowrap;
 }
 
 .messageList {
-    height: calc(100% - 45px);
+    height: var(--height45);
     color: var(--text-color-second);
     padding: 15px 0 5px 15px;
+    overflow-y: auto;
 }
 
 .messageList ul {
@@ -16,7 +17,7 @@
 
 .messageInput {
     height: 45px;
-    widows: 100%;
+    width: 100%;
     background-color: var(--blue);
     display: flex;
     justify-content: center;
