@@ -10,6 +10,11 @@ const socketLib = require("./lib/socket");
 const port = process.env.PORT || 8080;
 const sslRedirect = require("heroku-ssl-redirect");
 const isDev = process.env.NODE_ENV !== "production";
+const connectDB = require("./config/db");
+const userRoutes = require("./routes/user");
+
+// connect to database
+connectDB(isDev);
 
 // Middleware
 app.use(favicon(__dirname + "/frontend/build/favicon.ico"));
@@ -22,6 +27,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 app.disable("x-powered-by");
+
+// api routes
+app.use("/user", userRoutes);
 
 io.on("connection", socket => {
     console.log(" %s sockets connected", io.engine.clientsCount);
