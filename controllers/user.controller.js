@@ -4,75 +4,73 @@ const { responseToSend } = require("../utils/api");
 
 // api methods
 async function register(req, res) {
-    const { password = "" } = req.body;
-    let { email = "" } = req.body;
-    let { organization = "" } = req.body;
-    email = email.toLowerCase();
+    const { firstName = "", lastName = "", email = "", password = "", organization = "" } = req.body;
 
-    const areInputsValid = verifyValidEmailAndPassword({ email, password });
-    if (!areInputsValid.success) {
-        return responseToSend(res, areInputsValid);
-    }
-
+    // verify if user already exists
     const userExists = await getUserData({ email });
     if (userExists.success) {
         return responseToSend(res, {
-            message: "Account already exists"
+            errors: ["Account already exists"]
         });
     }
     if (userExists.isServerError) {
         return responseToSend(res, {
-            message: userExists.message
+            errors: [userExists.message]
         });
     }
 
     // Create User
-    const newUser = new User({ email });
+    const newUser = new User({ firstName, lastName, email, password, organization });
+    const invalidUser = newUser.validateSync();
 
-    // hash password and email
-    newUser.password = newUser.generatePasswordHash(password);
+    if (invalidUser) {
+        let errMsgs = [];
 
-    // Save User
-    newUser.save((err, user) => {
-        const responseData = err
-            ? {
-                message:
-                    "Server error. Couldn't create user. Please refresh the page and try again."
+        for (var err in invalidUser.errors) {
+            if (invalidUser.errors.hasOwnProperty(err)) {
+                errMsgs.push(invalidUser.errors[err].message);
             }
-            : {
-                success: true,
-                message: "Success"
-            };
+        }
 
-        return responseToSend(res, responseData);
-    });
+        return responseToSend(res, { errors: errMsgs, message: "Unable to create user" });
+    } else {
+        // hash password and email
+        newUser.password = newUser.generatePasswordHash(password);
+
+        // Save User
+        newUser.save((err, user) => {
+            const responseData = err
+                ? {
+                    errors:
+                        ["Server error. Couldn't create user. Please refresh the page and try again."]
+                }
+                : {
+                    success: true,
+                    message: "Success"
+                };
+
+            return responseToSend(res, responseData);
+        });
+    }
 }
 async function login(req, res) {
-    const { password = "" } = req.body;
-    let { email = "" } = req.body;
-    email = email.toLowerCase();
+    const { password = "", email = "" } = req.body;
 
-    const areInputsValid = verifyValidEmailAndPassword({ email, password });
-    if (!areInputsValid.success) {
-        return responseToSend(res, areInputsValid);
+    if (!email) {
+        return responseToSend(res, { errors: ["Please enter your email"] });
+    }
+    if (!password) {
+        return responseToSend(res, { errors: ["Please enter your password"] });
     }
 
     const userCall = await getUserData({ email });
     if (userCall.success) {
         const { payload: user } = userCall;
-        let errorMessage = "";
+        const { firstName, lastName } = user;
 
-        // verify user exists and password
-        if (!user) {
-            errorMessage =
-                "User doesn't exist. Please create account and try again.";
-        }
         if (!user.validPassword(password)) {
-            errorMessage = "Invalid password";
-        }
-        if (errorMessage) {
             return responseToSend(res, {
-                message: errorMessage
+                errors: ["Invalid Password"]
             });
         }
 
@@ -80,14 +78,13 @@ async function login(req, res) {
         const userSession = new UserSession({
             userId: user._id
         });
-        const { email, type } = user;
 
         // Save user session
-        userSession.save((err, doc) => {
+        userSession.save(async (err, doc) => {
             const responseData = err
                 ? {
-                    message:
-                        "Error creating session. Please refresh the page and try again."
+                    errors:
+                        ["Error creating session. Please refresh the page and try again."]
                 }
                 : {
                     success: true,
@@ -95,11 +92,17 @@ async function login(req, res) {
                     payload: {
                         token: doc._id,
                         userData: {
+                            firstName,
+                            lastName,
                             email,
-                            type
+                            isOnline: true
                         }
                     }
                 };
+
+            if (responseData.success) {
+                await setUserOnlineStatus({ email, status: true });
+            }
 
             return responseToSend(res, responseData);
         });
@@ -123,11 +126,12 @@ async function verify(req, res) {
                 success,
                 payload: {
                     email: user.email,
-                    type: user.type
+                    organization: user.organization,
+                    isOnline: user.isOnline
                 }
             }
             : {
-                message
+                errors: [message]
             };
 
         return responseToSend(res, responseData);
@@ -140,13 +144,19 @@ async function verify(req, res) {
 // Don't need to verify logout and deleteUser tokens as our middleware does it
 async function logout(req, res) {
     const token = req.body.token || req.query.token;
+    const userId = await getUserIdFromToken(token);
     const sessionDelete = await deleteSession(token);
-    const responseData = sessionDelete.success
-        ? {
+    let responseData;
+
+    if (sessionDelete.success) {
+        responseData = {
             success: true,
             message: "Logged Out"
         }
-        : sessionDelete;
+        await setUserOnlineStatus({ id: userId, status: false });
+    } else {
+        responseData = sessionDelete;
+    }
 
     return responseToSend(res, responseData);
 }
@@ -160,8 +170,8 @@ async function deleteUser(req, res) {
         return responseToSend(res, await deleteUserFromDb(userId));
     } else {
         return responseToSend(res, {
-            message:
-                "Server Error. Error deleting user. Please refresh the page and try again."
+            errors:
+                ["Server Error. Error deleting user. Please refresh the page and try again."]
         });
     }
 }
@@ -235,7 +245,7 @@ async function deleteSession(id) {
     } catch (e) {
         return {
             success: false,
-            message: "Server Error. Error deleting session."
+            errors: ["Server Error. Error deleting session."]
         };
     }
 }
@@ -248,7 +258,7 @@ async function deleteAllSessions(userId) {
     } catch (e) {
         return {
             success: false,
-            message: "Server Error. Error deleting sessions."
+            errors: ["Server Error. Error deleting sessions."]
         };
     }
 }
@@ -267,32 +277,20 @@ async function deleteUserFromDb(id) {
         };
     }
 }
+async function setUserOnlineStatus({ email = "", id = "", status = false }) {
+    let findBy = email.length !== 0 ? { email } : { _id: id };
 
-function verifyValidEmailAndPassword({ email = "", password = "" }) {
-    const emailRegex = /^((([!#$%&'*+\-/=?^_`{|}~\w])|([!#$%&'*+\-/=?^_`{|}~\w][!#$%&'*+\-/=?^_`{|}~\.\w]{0,}[!#$%&'*+\-/=?^_`{|}~\w]))[@]\w+([-.]\w+)*\.\w+([-.]\w+)*)$/;
-
-    if (!password && !email) {
+    return await User.updateOne(findBy, { isOnline: status }, (err, doc) => {
+        if (err) {
+            return {
+                success: false,
+                message: err.message
+            };
+        }
         return {
-            success: false,
-            message: "Please enter your email and password"
+            success: true
         };
-    }
-    if (!email || !emailRegex.test(email)) {
-        return {
-            success: false,
-            message: "Email is invalid."
-        };
-    }
-    if (!password || password.length < 6) {
-        return {
-            success: false,
-            message: "Password must be at least 6 characters."
-        };
-    }
-
-    return {
-        success: true
-    };
+    });
 }
 
 module.exports = {

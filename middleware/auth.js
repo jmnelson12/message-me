@@ -1,12 +1,12 @@
 const { verifyUserSession } = require("../controllers/user.controller");
+const { responseToSend } = require('../utils/api');
 
 async function isAuthenticated(req, res, next) {
     const token = req.body.token || req.params.token || req.query.token || null;
 
     if (!token) {
-        return res.json({
-            success: false,
-            message: "Not Authorized. Please login or create an account."
+        return responseToSend(res, {
+            errors: ["Not Authorized. Please login or create an account."]
         });
     }
 
@@ -15,17 +15,14 @@ async function isAuthenticated(req, res, next) {
             if (_res.success) {
                 next();
             } else {
-                return res.json({
-                    success: false,
-                    message:
-                        "Not Authorized. Please login or create an account."
-                });
+                return responseToSend(res, {
+                    errors: ["Not Authorized. Please login or create an account."]
+                })
             }
         });
     } catch (e) {
-        return res.json({
-            success: false,
-            message: "Error authenticating user"
+        return responseToSend(res, {
+            errors: ["Error authenticating user"]
         });
     }
 }
