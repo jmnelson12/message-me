@@ -28,17 +28,8 @@ export default function Navbar() {
 
                     {isMenuToggled &&
                         <div className="userMenu">
-                            {ctx.userLoggedIn ? (
-                                <>
-                                    <div className="menuItem">Logout</div>
-                                    <div className="menuItem txt-red">Delete Account</div>
-                                </>
-                            ) : (
-                                    <>
-                                        <div className="menuItem">Login</div>
-                                        <div className="menuItem">Sign Up</div>
-                                    </>
-                                )}
+                            <div className="menuItem">Logout</div>
+                            <div className="menuItem txt-red">Delete Account</div>
                         </div>
                     }
                 </nav>
