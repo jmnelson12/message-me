@@ -26,6 +26,28 @@
     top: 50px;
 }
 
+/* MESSAGE */
+.message-wrapper {
+    width: 100%;
+    position: absolute;
+    top: -65px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.message.error {
+    color: var(--danger-red);
+}
+
+.message.info {
+    color: var(--yellow-info);
+}
+
+.message.success {
+    color: var(--green-success);
+}
+
 /* INPUT GROUP ELEMENTS */
 .input-half-wrapper {
     display: flex;

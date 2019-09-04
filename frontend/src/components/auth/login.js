@@ -1,23 +1,45 @@
 import React, { useState } from 'react';
 
 export default function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [values, setValues] = useState({
+        email: '',
+        password: ''
+    });
+    const [message, setMessage] = useState({
+        type: "",
+        text: ""
+    });
+
+    const handleInputChange = e => {
+        const { name, value } = e.target
+        setValues({ ...values, [name]: value })
+    }
 
     return (
         <div className="login-wrapper authModal">
-            {/*<div className="authHeading">
-                <h2>Log In</h2>
-            </div>*/}
+            <div className="message-wrapper">
+                <p className={"message " + message.type}>{message.text}</p>
+            </div>
             <form className="authForm">
                 <div className="inputGroup required">
-                    <input type="email" value={email} required />
+                    <input
+                        type="text"
+                        name="email"
+                        value={values.email}
+                        onChange={handleInputChange}
+                        required
+                    />
                     <span class="highlight"></span>
                     <span class="bar"></span>
                     <label>Email</label>
                 </div>
                 <div className="inputGroup required">
-                    <input type="password" value={password} required />
+                    <input
+                        type="password"
+                        name="password"
+                        value={values.password}
+                        onChange={handleInputChange}
+                        required />
                     <span class="highlight"></span>
                     <span class="bar"></span>
                     <label>Password</label>
