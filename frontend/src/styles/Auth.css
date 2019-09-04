@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400&display=swap');
+
 .authPage {
     height: 100%;
     width: 100%;
@@ -5,20 +7,222 @@
     position: relative;
     display: flex;
     justify-content: center;
+    font-family: 'Montserrat', 'Heebo', sans-serif;
+    font-weight: 300;
+    padding: 60px 90px 45px;
+    background-color: var(--blue);
 }
 
-/* .authModal {
-    width: 35%;
-    height: 65%;
-    min-width: 250px;
-    max-width: 500px;
-    min-height: 290px;
-    max-height: 450px;
-    background-color: var(--blue);
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
-    border-radius: 3px;
+.authWrapper {
+    width: 100%;
     position: relative;
-    top: 50%;
-    transform: translateY(-51%);
-    overflow: auto;
-} */
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.authModal {
+    height: 100%;
+    position: relative;
+    top: 50px;
+}
+
+/* INPUT GROUP ELEMENTS */
+.input-half-wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+
+.input-half-wrapper .inputGroup {
+    width: 48%;
+}
+
+.inputGroup {
+    position: relative;
+    margin-bottom: 35px;
+}
+
+.inputGroup.float-left {
+    width: 45%
+}
+
+.inputGroup input {
+    font-size: 20px;
+    padding: 10px 10px 10px 5px;
+    display: block;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    border-bottom: 1px solid var(--dark-blue);
+    color: var(--white);
+    background-image: none !important;
+}
+
+.inputGroup label {
+    color: var(--light-blue);
+    font-size: 18px;
+    font-weight: normal;
+    position: absolute;
+    pointer-events: none;
+    left: 5px;
+    top: 10px;
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+}
+
+/* active state */
+.inputGroup input:focus~label,
+.inputGroup input:valid~label {
+    top: -18px;
+    font-size: 12px;
+    color: var(--light-blue);
+}
+
+.inputGroup .bar {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+.inputGroup .bar:before,
+.inputGroup .bar:after {
+    content: '';
+    height: 2px;
+    width: 0;
+    bottom: 1px;
+    position: absolute;
+    background: #5264AE;
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+}
+
+.inputGroup .bar:before {
+    left: 50%;
+}
+
+.inputGroup .bar:after {
+    right: 50%;
+}
+
+/* active state */
+.inputGroup input:focus~.bar:before,
+.inputGroup input:focus~.bar:after {
+    width: 50%;
+}
+
+/* HIGHLIGHTER ================================== */
+.inputGroup .highlight {
+    position: absolute;
+    height: 60%;
+    width: 100px;
+    top: 25%;
+    left: 0;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* active state */
+.inputGroup input:focus~.highlight {
+    -webkit-animation: inputHighlighter 0.3s ease;
+    -moz-animation: inputHighlighter 0.3s ease;
+    animation: inputHighlighter 0.3s ease;
+}
+
+/* SUBMIT BUTTON */
+.buttonGroup {
+    text-align: center;
+}
+
+.buttonGroup input {
+    border: none;
+    background-color: var(--light-blue);
+    text-transform: uppercase;
+    color: var(--white);
+    text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+    padding: 10px 20px;
+    border-radius: 2px;
+    font-size: 14px;
+    width: 50%;
+}
+
+.buttonGroup input:hover {
+    background-color: var(--hover-light-blue);
+}
+
+/* SWITCH ELEMENT */
+.buttonGroup.switch {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    text-align: left;
+}
+
+.buttonGroup.switch button {
+    border: none;
+    background-color: var(--forest-green);
+    text-transform: uppercase;
+    color: var(--white);
+    text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+    padding: 10px 20px;
+    border-radius: 2px;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.buttonGroup.switch button:hover {
+    background-color: var(--hover-forest-green);
+}
+
+/* GUEST LINK */
+.guestLink {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+.guestLink button {
+    border: none;
+    background-color: #475C67;
+    text-transform: uppercase;
+    color: var(--white);
+    text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+    padding: 10px 20px;
+    border-radius: 2px;
+    font-size: 14px;
+}
+
+/* ANIMATIONS ================ */
+@-webkit-keyframes inputHighlighter {
+    from {
+        background: #5264AE;
+    }
+
+    to {
+        width: 0;
+        background: transparent;
+    }
+}
+
+@-moz-keyframes inputHighlighter {
+    from {
+        background: #5264AE;
+    }
+
+    to {
+        width: 0;
+        background: transparent;
+    }
+}
+
+@keyframes inputHighlighter {
+    from {
+        background: #5264AE;
+    }
+
+    to {
+        width: 0;
+        background: transparent;
+    }
+}

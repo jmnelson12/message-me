@@ -7,7 +7,7 @@ import MessageBoard from "./components/messageBoard";
 import Navbar from "./components/navbar";
 import About from "./components/about";
 import MessageStatus from "./components/messageStatus";
-const Auth = React.lazy(() => import("./components/auth"));
+const Auth = React.lazy(() => import("./components/auth/auth"));
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
