@@ -4,13 +4,28 @@ const Login = React.lazy(() => import('./login'));
 const Register = React.lazy(() => import('./register'));
 
 export default function Auth() {
-    const [loginTabShowing, setLoginTabShowing] = useState(true);
+    const [loginTabShowing, setLoginTabShowing] = useState(false);
+    const [message, setMessage] = useState({
+        type: "",
+        text: ""
+    });
 
     return (
         <div className="authPage">
             <div className="authWrapper">
                 <Suspense fallback={<h1>LOADING...</h1>}>
-                    {loginTabShowing ? <Login /> : <Register />}
+                    <div className="message-wrapper">
+                        <p className={"message " + message.type}>{message.text}</p>
+                    </div>
+                    {loginTabShowing ?
+                        <Login
+                            setMessage={setMessage}
+                        /> :
+                        <Register
+                            setMessage={setMessage}
+                            setLoginTabShowing={setLoginTabShowing}
+                        />
+                    }
                 </Suspense>
                 <div className="buttonGroup switch">
                     {loginTabShowing ?

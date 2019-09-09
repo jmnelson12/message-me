@@ -46,7 +46,7 @@ async function register(req, res) {
                 }
                 : {
                     success: true,
-                    message: "Success"
+                    message: "Account Created"
                 };
 
             return responseToSend(res, responseData);

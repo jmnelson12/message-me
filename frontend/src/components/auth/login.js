@@ -27,10 +27,11 @@ export default function Login() {
                         name="email"
                         value={values.email}
                         onChange={handleInputChange}
+                        autoFocus
                         required
                     />
-                    <span class="highlight"></span>
-                    <span class="bar"></span>
+                    <span className="highlight"></span>
+                    <span className="bar"></span>
                     <label>Email</label>
                 </div>
                 <div className="inputGroup required">
@@ -40,8 +41,8 @@ export default function Login() {
                         value={values.password}
                         onChange={handleInputChange}
                         required />
-                    <span class="highlight"></span>
-                    <span class="bar"></span>
+                    <span className="highlight"></span>
+                    <span className="bar"></span>
                     <label>Password</label>
                 </div>
                 <div className="buttonGroup">

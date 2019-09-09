@@ -23,32 +23,48 @@
 .authModal {
     height: 100%;
     position: relative;
-    top: 50px;
+    top: 65px;
 }
 
 /* MESSAGE */
 .message-wrapper {
     width: 100%;
     position: absolute;
-    top: -65px;
+    top: -15px;
     left: 0;
     right: 0;
     text-align: center;
 }
 
+.message-wrapper .message {
+    border-radius: 3px;
+    padding: 6px 0;
+    color: var(--white);
+    font-size: 18px;
+}
+
 .message.error {
-    color: var(--danger-red);
+    background-color: var(--danger-red);
 }
 
 .message.info {
-    color: var(--yellow-info);
+    background-color: var(--yellow-info);
 }
 
 .message.success {
-    color: var(--green-success);
+    background-color: var(--green-success);
 }
 
 /* INPUT GROUP ELEMENTS */
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px var(--blue) inset;
+}
+
+/*Change text in autofill textbox*/
+input:-webkit-autofill {
+    -webkit-text-fill-color: var(--text-color-first) !important;
+}
+
 .input-half-wrapper {
     display: flex;
     flex-flow: row wrap;
@@ -76,7 +92,9 @@
     border: none;
     background-color: transparent;
     border-bottom: 1px solid var(--dark-blue);
-    color: var(--white);
+    /* doing important so autofill doesn't change style*/
+    color: var(--text-color-first) !important;
+    /* doing important so no random input image/icon shows up */
     background-image: none !important;
 }
 
