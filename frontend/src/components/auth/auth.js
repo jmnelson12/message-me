@@ -4,7 +4,7 @@ const Login = React.lazy(() => import('./login'));
 const Register = React.lazy(() => import('./register'));
 
 export default function Auth() {
-    const [loginTabShowing, setLoginTabShowing] = useState(false);
+    const [loginTabShowing, setLoginTabShowing] = useState(true);
     const [message, setMessage] = useState({
         type: "",
         text: ""

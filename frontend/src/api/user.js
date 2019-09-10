@@ -35,8 +35,36 @@ async function register({ firstName, lastName, email, password, organization }) 
         return _RESPONSE;
     }
 }
-async function login({ email, password }) { }
-async function logout(token) { }
+async function login({ email, password }) {
+    if (!str.isValid(email)) {
+        _RESPONSE.message = "Please enter your email.";
+        return _RESPONSE;
+    }
+    if (!str.isValid(password)) {
+        _RESPONSE.message = "Please enter your password.";
+        return _RESPONSE;
+    }
+
+    try {
+        return await axios.post("/user/login", { email, password });
+    } catch (e) {
+        _RESPONSE.message = "Server Error. Please try again.";
+        return _RESPONSE;
+    }
+}
+async function logout(token) {
+    if (!str.isValid(token)) {
+        _RESPONSE.message = "Error logging out.";
+        return _RESPONSE;
+    }
+
+    try {
+        return await axios.get("/user/logout?token=" + token);
+    } catch (e) {
+        _RESPONSE.message = "Server Error. Please try again.";
+        return _RESPONSE;
+    }
+}
 async function verify(token) { }
 async function remove(token) { }
 

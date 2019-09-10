@@ -66,7 +66,7 @@ async function login(req, res) {
     const userCall = await getUserData({ email });
     if (userCall.success) {
         const { payload: user } = userCall;
-        const { firstName, lastName } = user;
+        const { firstName, lastName, isAdmin, organization } = user;
 
         if (!user.validPassword(password)) {
             return responseToSend(res, {
@@ -94,8 +94,9 @@ async function login(req, res) {
                         userData: {
                             firstName,
                             lastName,
-                            email,
-                            isOnline: true
+                            organization,
+                            isOnline: true,
+                            isAdmin
                         }
                     }
                 };
@@ -205,7 +206,7 @@ async function getUserData({ email = "", id = "" }) {
             if (!user) {
                 return {
                     success: false,
-                    message: "User doesn't exist."
+                    message: "User not found."
                 };
             }
             return {

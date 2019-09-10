@@ -36,6 +36,10 @@
     text-align: center;
 }
 
+.login-wrapper .message-wrapper {
+    top: -65px;
+}
+
 .message-wrapper .message {
     border-radius: 3px;
     padding: 6px 0;
