@@ -13,7 +13,7 @@ export default function Auth() {
     return (
         <div className="authPage">
             <div className="authWrapper">
-                <Suspense fallback={<h1>LOADING...</h1>}>
+                <Suspense fallback={<h1>Loading...</h1>}>
                     <div className="message-wrapper">
                         <p className={"message " + message.type}>{message.text}</p>
                     </div>

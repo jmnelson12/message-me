@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import UserConsumer from "../../context/user";
 import { login } from "../../api/user";
+import { setMouseStyle, MS_WAIT, MS_DEFAULT } from "../../lib/utils";
 import { setInStorage, token_key } from "../../lib/storage";
 
 export default function Login() {
@@ -22,9 +23,12 @@ export default function Login() {
     const handleLogin = (e, ctx) => {
         e.preventDefault();
         setIsLoading(true);
+        setMouseStyle(MS_WAIT);
 
         login(values).then(res => {
             const { success, message, errors, payload } = res.data;
+            setIsLoading(false);
+            setMouseStyle(MS_DEFAULT);
 
             if (success) {
                 ctx.setUserLoggedIn(true);
@@ -35,7 +39,6 @@ export default function Login() {
                     type: "error",
                     text: errors[0] || message
                 });
-                setIsLoading(false);
             }
         });
     }

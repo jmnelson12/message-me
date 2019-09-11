@@ -65,7 +65,17 @@ async function logout(token) {
         return _RESPONSE;
     }
 }
-async function verify(token) { }
+async function verify(token) {
+    if (!str.isValid(token)) {
+        return false;
+    }
+
+    try {
+        return await axios.get("/user/verify?token=" + token);
+    } catch (e) {
+        return false;
+    }
+}
 async function remove(token) { }
 
 export { register, login, logout, verify, remove }

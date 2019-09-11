@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { register } from "../../api/user";
+import { setMouseStyle, MS_WAIT, MS_DEFAULT } from "../../lib/utils";
 
 export default function Register({ setMessage, setLoginTabShowing }) {
     const [values, setValues] = useState({
@@ -19,9 +20,12 @@ export default function Register({ setMessage, setLoginTabShowing }) {
     const handleRegister = e => {
         e.preventDefault();
         setIsLoading(true);
+        setMouseStyle(MS_WAIT);
 
         register(values).then(res => {
             const { success, message, errors } = res.data;
+            setIsLoading(false);
+            setMouseStyle(MS_DEFAULT);
 
             if (success) {
                 setMessage({
@@ -35,8 +39,6 @@ export default function Register({ setMessage, setLoginTabShowing }) {
                     text: errors[0]
                 });
             }
-
-            setIsLoading(false);
         });
     }
 

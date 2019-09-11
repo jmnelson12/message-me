@@ -126,9 +126,14 @@ async function verify(req, res) {
             ? {
                 success,
                 payload: {
-                    email: user.email,
-                    organization: user.organization,
-                    isOnline: user.isOnline
+                    token,
+                    userData: {
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        organization: user.organization,
+                        isOnline: true,
+                        isAdmin: user.isAdmin
+                    }
                 }
             }
             : {
