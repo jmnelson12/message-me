@@ -172,7 +172,6 @@ async function deleteUser(req, res) {
     const allSessionDelete = await deleteAllSessions(userId);
 
     if (allSessionDelete.success) {
-        // delete notes here as well
         return responseToSend(res, await deleteUserFromDb(userId));
     } else {
         return responseToSend(res, {

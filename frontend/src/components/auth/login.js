@@ -31,7 +31,7 @@ export default function Login() {
             setMouseStyle(MS_DEFAULT);
 
             if (success) {
-                ctx.setUserLoggedIn(true);
+                ctx.setIsLoggedIn(true);
                 ctx.setUserData(payload.userData);
                 setInStorage(token_key, payload.token);
             } else {

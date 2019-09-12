@@ -23,11 +23,15 @@ function App() {
     isOnline: false,
     isAdmin: false
   });
+  const [globalMessage, setGlobalMessage] = useState({
+    type: "",
+    text: ""
+  });
 
   useEffect(() => {
     const token = getFromStorage(token_key);
     verify(token).then(res => {
-      if (res) {
+      if (res && res.data.success) {
         const {
           payload: {
             token,
@@ -35,8 +39,8 @@ function App() {
           }
         } = res.data;
 
-        setUserData(_userData);
         setIsLoggedIn(true);
+        setUserData(_userData);
         setInStorage(token_key, token);
       }
     });
@@ -48,46 +52,55 @@ function App() {
     }
   }, []);
 
+  const handleKeypress = function () {
+    if (globalMessage.type && globalMessage.text) {
+      setGlobalMessage({
+        type: "",
+        text: ""
+      });
+    }
+  }
+
   return (
-    <GlobalProvider>
-      <UserProvider loggedIn={isLoggedIn} user={userData}>
-        <UserConsumer>
-          {userContext => (
-            <div className="App">
-              <div className="col-3 sidebar">
-                {userData.isAdmin ? <div>oi</div> : <About />}
-                <MessageStatus />
-              </div>
-              <div className="col-9">
-                {/*<div className="message-wrapper">
-                  <GlobalConsumer>
-                    {
-                      globalContext => {
-                        const { type: _type, text: _text } = globalContext.globalMessage;
-                        return (
-                          <p className={"message " + _type}>{_text}</p>
-                        )
+    <div className="App" onKeyPress={handleKeypress}>
+      <GlobalProvider globalMessage={globalMessage} setGlobalMessage={setGlobalMessage}>
+        <UserProvider isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} userData={userData} setUserData={setUserData}>
+          <UserConsumer>
+            {userContext => (
+              <>
+                <div className="col-3 sidebar">
+                  {userContext.userData.isAdmin ? <div>oi</div> : <About />}
+                  <MessageStatus />
+                </div>
+                <div className="col-9 pos-rel">
+                  <div className="global message-wrapper">
+                    <GlobalConsumer>
+                      {
+                        globalContext => {
+                          const { type: _type, text: _text } = globalContext.globalMessage;
+                          return (
+                            <p className={"message " + _type}>{_text}</p>
+                          )
+                        }
                       }
-                    }
-                  </GlobalConsumer>
-                  </div>*/}
-                {isLoggedIn ?
-                  (
+                    </GlobalConsumer>
+                  </div>
+                  {userContext.isLoggedIn ? (
                     <>
                       <Navbar />
                       <MessageBoard />
-                    </>
-                  ) :
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <Auth />
-                  </Suspense>
-                }
-              </div>
-            </div>
-          )}
-        </UserConsumer>
-      </UserProvider>
-    </GlobalProvider>
+                    </>) :
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <Auth />
+                    </Suspense>
+                  }
+                </div>
+              </>
+            )}
+          </UserConsumer>
+        </UserProvider>
+      </GlobalProvider>
+    </div>
   );
 }
 

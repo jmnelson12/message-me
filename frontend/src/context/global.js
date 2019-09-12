@@ -1,12 +1,7 @@
-import React, { createContext, useState } from "react";
+import React, { createContext } from "react";
 const { Provider, Consumer } = createContext();
 
-const GlobalProvider = ({ children }) => {
-    const [globalMessage, setGlobalMessage] = useState({
-        type: "",
-        text: ""
-    });
-
+const GlobalProvider = ({ children, globalMessage, setGlobalMessage }) => {
     return (
         <Provider
             value={{

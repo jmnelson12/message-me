@@ -1,15 +1,12 @@
-import React, { createContext, useState } from "react";
+import React, { createContext } from "react";
 const { Provider, Consumer } = createContext();
 
-const UserProvider = ({ children, user, loggedIn }) => {
-  const [userLoggedIn, setUserLoggedIn] = useState(loggedIn);
-  const [userData, setUserData] = useState(user);
-
+const UserProvider = ({ children, isLoggedIn, setIsLoggedIn, userData, setUserData }) => {
   return (
     <Provider
       value={{
-        userLoggedIn,
-        setUserLoggedIn,
+        isLoggedIn,
+        setIsLoggedIn,
         userData,
         setUserData
       }}

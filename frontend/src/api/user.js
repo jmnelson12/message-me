@@ -76,6 +76,16 @@ async function verify(token) {
         return false;
     }
 }
-async function remove(token) { }
+async function remove(token) {
+    if (!str.isValid(token)) {
+        return false;
+    }
+
+    try {
+        return await axios.delete("/user/deleteUser?token=" + token);
+    } catch (e) {
+        return false;
+    }
+}
 
 export { register, login, logout, verify, remove }

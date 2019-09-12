@@ -4,7 +4,7 @@ import UserConsumer from "../context/user";
 import GlobalConsumer from "../context/global";
 import { token_key, getFromStorage, removeFromStorage } from "../lib/storage";
 import { setMouseStyle, MS_WAIT, MS_DEFAULT } from "../lib/utils";
-import { logout } from "../api/user";
+import { logout, remove } from "../api/user";
 
 export default function Navbar() {
     var [isMenuToggled, setIsMenuToggled] = useState(false);
@@ -12,7 +12,6 @@ export default function Navbar() {
     const toggleMenu = function () {
         setIsMenuToggled(!isMenuToggled);
     }
-
     const handleLogout = function (userCtx, globalCtx) {
         const token = getFromStorage(token_key);
         setMouseStyle(MS_WAIT);
@@ -22,22 +21,49 @@ export default function Navbar() {
             setMouseStyle(MS_DEFAULT);
 
             if (success) {
-                removeFromStorage(token_key);
+                //removeFromStorage(token_key);
                 globalCtx.setGlobalMessage({
                     type: "success",
                     text: "Logged Out"
                 });
-                userCtx.setUserLoggedIn(false);
+                userCtx.setIsLoggedIn(false);
                 userCtx.setUserData({});
             } else {
                 globalCtx.setGlobalMessage({
                     type: "error",
-                    text: "Error logging out. Please refresh and try again."
+                    text: errors[0] || message
                 });
             }
         });
     }
-    const handleDelete = function (userCtx, globalCtx) { }
+    const handleDelete = function (userCtx, globalCtx) {
+        /* eslint-disable */
+        var c = confirm("Are you sure you want to delete your account?");
+        /* eslint-enable */
+
+        if (c) {
+            const token = getFromStorage(token_key);
+
+            remove(token).then(res => {
+                const { success, errors, message } = res.data;
+
+                if (success) {
+                    removeFromStorage(token_key);
+                    globalCtx.setGlobalMessage({
+                        type: "success",
+                        text: "User Deleted"
+                    });
+                    userCtx.setIsLoggedIn(false);
+                    userCtx.setUserData({});
+                } else {
+                    globalCtx.setGlobalMessage({
+                        type: "error",
+                        text: errors[0] || message
+                    });
+                }
+            });
+        }
+    }
 
     return (
         <GlobalConsumer>
