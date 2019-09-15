@@ -8,13 +8,15 @@ import GlobalConsumer from "./context/global";
 import { verify } from "./api/user";
 import { getFromStorage, setInStorage, token_key } from "./lib/storage";
 
-import MessageBoard from "./components/messageBoard";
 import Navbar from "./components/navbar";
 import About from "./components/sidebar/about";
 import MessageStatus from "./components/messageStatus";
+const MessageBoard = React.lazy(() => import("./components/messageBoard"));
 const Auth = React.lazy(() => import("./components/auth/auth"));
+const Contacts = React.lazy(() => import("./components/sidebar/contacts"));
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState({
     firstName: "",
@@ -43,6 +45,7 @@ function App() {
         setUserData(_userData);
         setInStorage(token_key, token);
       }
+      setIsLoading(false);
     });
 
     try {
@@ -68,33 +71,46 @@ function App() {
           <UserConsumer>
             {userContext => (
               <>
-                <div className="col-3 sidebar">
-                  {userContext.userData.isAdmin ? <div>oi</div> : <About />}
-                  <MessageStatus />
-                </div>
-                <div className="col-9 pos-rel">
-                  <div className="global message-wrapper">
-                    <GlobalConsumer>
+                {isLoading ?
+                  <div>Loading...</div> :
+                  <>
+                    <div className="col-3 sidebar">
                       {
-                        globalContext => {
-                          const { type: _type, text: _text } = globalContext.globalMessage;
-                          return (
-                            <p className={"message " + _type}>{_text}</p>
-                          )
-                        }
+                        userContext.userData.isAdmin ?
+                          <Suspense fallback={<div>Loading...</div>}>
+                            <Contacts />
+                          </Suspense> :
+                          <About />
                       }
-                    </GlobalConsumer>
-                  </div>
-                  {userContext.isLoggedIn ? (
-                    <>
-                      <Navbar />
-                      <MessageBoard />
-                    </>) :
-                    <Suspense fallback={<div>Loading...</div>}>
-                      <Auth />
-                    </Suspense>
-                  }
-                </div>
+                      <MessageStatus />
+                    </div>
+                    <div className="col-9 pos-rel">
+                      <div className="global message-wrapper">
+                        <GlobalConsumer>
+                          {
+                            globalContext => {
+                              const { type: _type, text: _text } = globalContext.globalMessage;
+                              return (
+                                <p className={"message " + _type}>{_text}</p>
+                              )
+                            }
+                          }
+                        </GlobalConsumer>
+                      </div>
+                      {userContext.isLoggedIn ? (
+                        <>
+                          <Navbar />
+                          <Suspense fallback={<div>Loading...</div>}>
+                            <MessageBoard />
+                          </Suspense>
+                        </>) :
+                        <Suspense fallback={<div>Loading...</div>}>
+                          <Auth />
+                        </Suspense>
+                      }
+                    </div>
+                  </>
+                }
               </>
             )}
           </UserConsumer>

@@ -4,7 +4,7 @@ const Login = React.lazy(() => import('./login'));
 const Register = React.lazy(() => import('./register'));
 
 export default function Auth() {
-    const [loginTabShowing, setLoginTabShowing] = useState(true);
+    const [loginTabShowing, setLoginTabShowing] = useState(false);
     const [message, setMessage] = useState({
         type: "",
         text: ""
@@ -42,9 +42,11 @@ export default function Auth() {
                         )
                     }
                 </div>
+                {/*
                 <div className="guestLink">
                     <button>Continue as guest</button>
                 </div>
+                */}
             </div>
         </div>
     )
